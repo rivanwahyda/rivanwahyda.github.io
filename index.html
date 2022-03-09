@@ -146,20 +146,28 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <form>
+                  <div class="alert alert-success alert-dismissible fade show d-none my-alert" role="alert">
+                    <strong>Thank You!</strong> we have received your message .
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                    <form name="rivan-contact-form">
                         <div class="mb-3">
                           <label for="name" class="form-label">Full Name</label>
-                          <input type="name" class="form-control fst-italic" id="name" aria-describedby="name" placeholder="Insert Name">
+                          <input type="name" class="form-control fst-italic" id="name" aria-describedby="name" placeholder="Insert Name" name="nama">
                         </div>
                         <div class="mb-3">
                           <label for="email" class="form-label">Email address</label>
-                          <input type="email" class="form-control fst-italic" id="email" aria-describedby="email" placeholder="Insert Email">
+                          <input type="email" class="form-control fst-italic" id="email" aria-describedby="email" placeholder="Insert Email" name="email">
                         </div>
                         <div class="mb-3">
                             <label for="pesan" class="form-label">Massage</label>
-                            <textarea class="form-control fst-italic" id="pesan" rows="3" placeholder="Insert Massage"></textarea>
+                            <textarea class="form-control fst-italic" id="pesan" rows="3" placeholder="Insert Massage" name="pesan"></textarea>
                           </div>
-                        <button type="submit" class="btn btn-primary mb-3">Send</button>
+                        <button type="submit" class="btn btn-primary btn-kirim">Send</button>
+                        <button class="btn btn-primary btn-loading d-none" type="button" disabled>
+                          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                          Loading...
+                        </button>
                       </form>
                 </div>
             </div>
@@ -177,5 +185,37 @@
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <!-- google sheets -->
+    <script>
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbw9-HwrEU4Fo9icj8DAaQgHgJRe5wH6WW65RF5WbOFLzRS_XWrm8tTYYKWf5C9iMpky/exec';
+      const form = document.forms['rivan-contact-form'];
+      const btnKirim = document.querySelector('.btn-kirim');
+      const btnLoading = document.querySelector('.btn-loading');
+      const myAlert = document.querySelector('.my-alert');
+      
+      
+      form.addEventListener('submit', e => {
+        e.preventDefault()
+        //ketika tombol send di klik
+        //tampilka tombol loading, hilangkan tombol send
+        btnLoading.classList.toggle('d-none');
+        btnKirim.classList.toggle('d-none');
+        
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+          .then(response => {
+            //tampilka tombol send, hilangkan tombol loading
+            btnLoading.classList.toggle('d-none');
+            btnKirim.classList.toggle('d-none');
+            //tampilkan alert
+            myAlert.classList.toggle('d-none');
+            //reset form
+            form.reset();
+
+            console.log('Success!', response)
+          })
+          .catch(error => console.error('Error!', error.message))
+      })
+    </script>
+    <!-- akhir google sheets -->
   </body>
 </html>
